@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useQuotes } from '../hooks/useQuotes'
+import { formatPriceCOP, copToUsd, formatPriceUSD } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -11,10 +12,24 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { quotesService } from '../services/quotes.service'
+import { DeleteQuoteDialog } from './DeleteQuoteDialog'
 
 export function QuoteList() {
   const navigate = useNavigate()
-  const { quotes, loading, error } = useQuotes()
+  const { quotes, loading, error, refresh } = useQuotes()
+  
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  
+  const selectedQuote = quotes.find(q => q.id === deleteId)
+
+  const handleDelete = async () => {
+    if (!deleteId) return
+    await quotesService.delete(deleteId)
+    refresh()
+  }
 
   if (loading) {
     return (
@@ -61,9 +76,10 @@ export function QuoteList() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Patient</TableHead>
+                  <TableHead>Paciente</TableHead>
                   <TableHead className="text-right">Total</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead className="w-[100px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -75,10 +91,28 @@ export function QuoteList() {
                   >
                     <TableCell>{quote.patient_name}</TableCell>
                     <TableCell className="text-right">
-                      ${quote.total.toFixed(2)}
+                      <span>{formatPriceCOP(quote.total)}</span>
+                      {quote.exchange_rate && (
+                        <span className="ml-1.5 text-xs text-muted-foreground">
+                          ({formatPriceUSD(copToUsd(quote.total, quote.exchange_rate))})
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell>
                       {new Date(quote.created_at).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDeleteId(quote.id)
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -87,6 +121,13 @@ export function QuoteList() {
           </CardContent>
         </Card>
       )}
+
+      <DeleteQuoteDialog
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+        patientName={selectedQuote?.patient_name || ''}
+      />
     </div>
   )
 }

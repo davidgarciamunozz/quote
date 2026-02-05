@@ -54,10 +54,13 @@ export const quotesService = {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) throw new Error('User not authenticated')
 
-        // Calculate total
-        const total = input.items.reduce((sum, item) => {
+        // Calculate total egresos (sum of items)
+        const totalEgresos = input.items.reduce((sum, item) => {
             return sum + (item.price_snapshot * item.quantity)
         }, 0)
+
+        const operationalProfit = input.operational_profit ?? 0
+        const total = totalEgresos + operationalProfit
 
         // Create quote
         const { data: quote, error: quoteError } = await supabase
@@ -66,6 +69,8 @@ export const quotesService = {
                 patient_name: input.patient_name,
                 notes: input.notes || null,
                 total,
+                operational_profit: operationalProfit,
+                exchange_rate: input.exchange_rate ?? 3500,
                 created_by: user.id,
             })
             .select()

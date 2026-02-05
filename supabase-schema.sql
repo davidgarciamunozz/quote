@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS price_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   price NUMERIC NOT NULL CHECK (price >= 0),
-  group_type TEXT NOT NULL CHECK (group_type IN ('clinic', 'laboratory', 'logistics', 'extra')),
+  group_type TEXT NOT NULL CHECK (group_type IN ('clinic', 'laboratory', 'logistics', 'implantologist', 'periodontist', 'endodontist', 'extra')),
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS quotes (
   patient_name TEXT NOT NULL,
   notes TEXT,
   total NUMERIC NOT NULL CHECK (total >= 0),
+  operational_profit NUMERIC DEFAULT 0 CHECK (operational_profit >= 0),
+  exchange_rate NUMERIC DEFAULT 3500,
   created_at TIMESTAMPTZ DEFAULT now(),
   created_by UUID REFERENCES auth.users(id) NOT NULL
 );
@@ -115,18 +117,46 @@ CREATE TRIGGER update_price_items_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- Insert sample price items (optional - for testing)
+-- Insert price items - Catálogo en pesos colombianos (COP)
 INSERT INTO price_items (name, price, group_type) VALUES
-  ('Dental Cleaning', 80.00, 'clinic'),
-  ('Dental Exam', 50.00, 'clinic'),
-  ('X-Ray (Single)', 25.00, 'clinic'),
-  ('X-Ray (Full Mouth)', 150.00, 'clinic'),
-  ('Filling (Composite)', 120.00, 'clinic'),
-  ('Root Canal', 800.00, 'clinic'),
-  ('Crown (Porcelain)', 1200.00, 'laboratory'),
-  ('Bridge (3-unit)', 2500.00, 'laboratory'),
-  ('Dentures (Full Set)', 1800.00, 'laboratory'),
-  ('Teeth Whitening', 350.00, 'extra'),
-  ('Emergency Visit', 100.00, 'extra'),
-  ('Consultation', 75.00, 'clinic')
-ON CONFLICT DO NOTHING;
+  -- Dentista (Clinic)
+  ('Higiene', 160000, 'clinic'),
+  ('Preparación Puente', 50000, 'clinic'),
+  ('Caries', 100000, 'clinic'),
+  ('Coronas Puesta', 80000, 'clinic'),
+  ('Carillas Puesta', 110000, 'clinic'),
+  ('Extracción diente', 50000, 'clinic'),
+  ('Extracción cordales', 100000, 'clinic'),
+  -- Laboratorio
+  ('Corona', 260000, 'laboratory'),
+  ('Carillas', 190000, 'laboratory'),
+  ('Corona Metal Porcelana', 150000, 'laboratory'),
+  ('Corona en Ceromero', 160000, 'laboratory'),
+  ('Corona en Disilicato', 230000, 'laboratory'),
+  ('Corona en Circonio', 250000, 'laboratory'),
+  ('Incrustración Disilicato', 230000, 'laboratory'),
+  ('Carilla en Disilicato', 230000, 'laboratory'),
+  ('Carilla en Ceromero', 160000, 'laboratory'),
+  ('Provisional autocurado', 30000, 'laboratory'),
+  ('Provisional termocurado', 35000, 'laboratory'),
+  ('Placa extracomfort', 160000, 'laboratory'),
+  ('Protesis total o parcial', 150000, 'laboratory'),
+  ('Protesis inmediata', 90000, 'laboratory'),
+  ('Placa acetato', 30000, 'laboratory'),
+  ('Retenedor essix', 30000, 'laboratory'),
+  ('Encerado diagnostico', 20000, 'laboratory'),
+  ('Escaner', 250000, 'laboratory'),
+  -- Implantólogo
+  ('Implantes', 1800000, 'implantologist'),
+  ('Ingerto de Hueso', 300000, 'implantologist'),
+  ('Rehabilitación de implante', 800000, 'implantologist'),
+  -- Periodoncista
+  ('Recorte de encia', 80000, 'periodontist'),
+  ('Raspado periodontal', 400000, 'periodontist'),
+  -- Endodoncista
+  ('Endodoncia', 500000, 'endodontist'),
+  -- Logística
+  ('Transporte', 800000, 'logistics'),
+  ('Hotel', 340000, 'logistics'),
+  ('Alimentación', 100000, 'logistics'),
+  ('Video y edición', 450000, 'logistics');

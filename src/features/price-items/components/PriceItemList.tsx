@@ -1,4 +1,6 @@
 import { usePriceItems } from '../hooks/usePriceItems'
+import { GROUP_LABELS, type PriceItemGroupType } from '../types'
+import { formatPriceCOP, copToUsd, formatPriceUSD } from '@/lib/utils'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import {
   Table,
@@ -9,6 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+
+const DEFAULT_EXCHANGE_RATE = 3500
 
 export function PriceItemList() {
   const { priceItems, loading, error } = usePriceItems()
@@ -40,12 +44,16 @@ export function PriceItemList() {
     return acc
   }, {} as Record<string, typeof priceItems>)
 
+  const groupOrder: PriceItemGroupType[] = ['clinic', 'laboratory', 'implantologist', 'periodontist', 'endodontist', 'logistics', 'extra']
+
   return (
     <div className="space-y-6">
-      {Object.entries(groupedItems).map(([groupType, items]) => (
+      {groupOrder.filter((g) => groupedItems[g]).map((groupType) => {
+        const items = groupedItems[groupType]
+        return (
         <Card key={groupType}>
           <CardHeader>
-            <h3 className="text-lg font-semibold capitalize">{groupType}</h3>
+            <h3 className="text-lg font-semibold">{GROUP_LABELS[groupType]}</h3>
           </CardHeader>
           <CardContent>
             <Table>
@@ -60,7 +68,10 @@ export function PriceItemList() {
                   <TableRow key={item.id}>
                     <TableCell>{item.name}</TableCell>
                     <TableCell className="text-right">
-                      ${item.price.toFixed(2)}
+                      <span>{formatPriceCOP(item.price)}</span>
+                      <span className="ml-1.5 text-xs text-muted-foreground">
+                        ({formatPriceUSD(copToUsd(item.price, DEFAULT_EXCHANGE_RATE))})
+                      </span>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -68,7 +79,8 @@ export function PriceItemList() {
             </Table>
           </CardContent>
         </Card>
-      ))}
+        )
+      })}
     </div>
   )
 }

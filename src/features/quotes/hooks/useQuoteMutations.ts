@@ -14,11 +14,15 @@ export function useQuoteMutations() {
 
             if (!isSupabaseConfigured()) {
                 await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
+                const totalEgresos = input.items.reduce((s, i) => s + i.price_snapshot * i.quantity, 0)
+                const total = totalEgresos + (input.operational_profit ?? 0)
                 return {
                     id: 'mock-new-id',
                     patient_name: input.patient_name,
                     notes: input.notes || null,
-                    total: 0, // Mock total
+                    total,
+                    operational_profit: input.operational_profit ?? 0,
+                    exchange_rate: input.exchange_rate ?? 3500,
                     created_at: new Date().toISOString(),
                     created_by: 'mock-user-id'
                 }

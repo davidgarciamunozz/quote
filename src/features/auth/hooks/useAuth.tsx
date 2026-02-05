@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-import { isSupabaseConfigured } from '@/lib/env'
-import { MOCK_USER } from '@/lib/mockData'
 import type { AuthState, User } from '../types'
 import type { Session } from '@supabase/supabase-js'
 
@@ -17,14 +15,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Skip auth if Supabase is not configured (preview mode)
-    if (!isSupabaseConfigured()) {
-      setSession({ user: MOCK_USER } as any)
-      setUser(MOCK_USER)
-      setLoading(false)
-      return
-    }
-
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)

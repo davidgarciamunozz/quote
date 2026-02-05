@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import type { PriceItem } from '../types'
+import type { PriceItem, PriceItemGroupType } from '../types'
 
 interface PriceItemFormProps {
   item?: PriceItem
@@ -38,9 +38,9 @@ export function PriceItemForm({ item, onSuccess, onCancel }: PriceItemFormProps)
       }
 
       if (item) {
-        await updatePriceItem(item.id, { name, price: priceNum, group_type: groupType as 'clinic' | 'laboratory' | 'logistics' | 'extra' })
+        await updatePriceItem(item.id, { name, price: priceNum, group_type: groupType as PriceItemGroupType })
       } else {
-        await createPriceItem({ name, price: priceNum, group_type: groupType as 'clinic' | 'laboratory' | 'logistics' | 'extra' })
+        await createPriceItem({ name, price: priceNum, group_type: groupType as PriceItemGroupType })
       }
       
       onSuccess?.()
@@ -89,9 +89,12 @@ export function PriceItemForm({ item, onSuccess, onCancel }: PriceItemFormProps)
             <SelectValue placeholder="Select group type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="clinic">Clinic</SelectItem>
-            <SelectItem value="laboratory">Laboratory</SelectItem>
-            <SelectItem value="logistics">Logistics</SelectItem>
+            <SelectItem value="clinic">Dentista</SelectItem>
+            <SelectItem value="laboratory">Laboratorio</SelectItem>
+            <SelectItem value="logistics">Logística</SelectItem>
+            <SelectItem value="implantologist">Implantólogo</SelectItem>
+            <SelectItem value="periodontist">Periodoncista</SelectItem>
+            <SelectItem value="endodontist">Endodoncista</SelectItem>
             <SelectItem value="extra">Extra</SelectItem>
           </SelectContent>
         </Select>

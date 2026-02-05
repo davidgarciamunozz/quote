@@ -4,8 +4,8 @@
 
 export const env = {
     supabase: {
-        url: import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co',
-        anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-anon-key',
+        url: import.meta.env.VITE_SUPABASE_URL,
+        anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
     },
 } as const
 

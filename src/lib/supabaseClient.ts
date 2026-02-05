@@ -58,6 +58,8 @@ export type Database = {
                     patient_name: string
                     notes: string | null
                     total: number
+                    operational_profit: number | null
+                    exchange_rate: number | null
                     created_at: string
                     created_by: string
                 }
@@ -66,6 +68,8 @@ export type Database = {
                     patient_name: string
                     notes?: string | null
                     total: number
+                    operational_profit?: number | null
+                    exchange_rate?: number | null
                     created_at?: string
                     created_by: string
                 }
@@ -74,6 +78,8 @@ export type Database = {
                     patient_name?: string
                     notes?: string | null
                     total?: number
+                    operational_profit?: number | null
+                    exchange_rate?: number | null
                     created_at?: string
                     created_by?: string
                 }

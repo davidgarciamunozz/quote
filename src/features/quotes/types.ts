@@ -5,6 +5,10 @@ export interface Quote {
     patient_name: string
     notes: string | null
     total: number
+    /** Ganancia operacional en COP */
+    operational_profit?: number
+    /** Tasa de cambio COP/USD usada (ej: 3500 = 1 USD = 3500 COP) */
+    exchange_rate?: number
     created_at: string
     created_by: string
 }
@@ -30,6 +34,10 @@ export interface CreateQuoteInput {
     patient_name: string
     notes?: string
     items: CreateQuoteItemInput[]
+    /** Ganancia operacional en COP */
+    operational_profit?: number
+    /** Tasa de cambio COP/USD (ej: 3500) */
+    exchange_rate?: number
 }
 
 export interface CreateQuoteItemInput {
