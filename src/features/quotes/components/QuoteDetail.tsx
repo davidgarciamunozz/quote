@@ -88,22 +88,24 @@ export function QuoteDetail() {
     
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
-    
+
     const itemsTotal = quote.items.reduce((s, i) => s + i.subtotal, 0)
-    
-    doc.text('Total egresos:', 130, finalY)
-    doc.text(formatPriceCOP(itemsTotal), 196, finalY, { align: 'right' })
-    
+    const labelX = 145
+    const valueX = 196
+
+    doc.text('Total egresos:', labelX, finalY, { align: 'right' })
+    doc.text(formatPriceCOP(itemsTotal), valueX, finalY, { align: 'right' })
+
     if (quote.operational_profit) {
-      doc.text('Ganancia operacional:', 130, finalY + 7)
-      doc.text(formatPriceCOP(quote.operational_profit), 196, finalY + 7, { align: 'right' })
+      doc.text('Ganancia operacional:', labelX, finalY + 7, { align: 'right' })
+      doc.text(formatPriceCOP(quote.operational_profit), valueX, finalY + 7, { align: 'right' })
     }
 
-    doc.setFontSize(14)
+    doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.setTextColor(59, 130, 246)
-    doc.text('Total Cotización:', 130, finalY + 18)
-    doc.text(formatPriceCOP(quote.total), 196, finalY + 18, { align: 'right' })
+    doc.text('Total Cotización:', labelX, finalY + 18, { align: 'right' })
+    doc.text(formatPriceCOP(quote.total), valueX, finalY + 18, { align: 'right' })
     
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
