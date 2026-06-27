@@ -3,6 +3,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { ReactNode } from 'react'
+import logo from '@/assets/logo.png'
 
 interface LayoutProps {
   children: ReactNode
@@ -31,7 +32,7 @@ export function Layout({ children }: LayoutProps) {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-8">
-              <h1 className="text-xl font-bold text-primary">Dental Quotes</h1>
+              <img src={logo} alt="FesamedCare" className="h-8 w-auto" />
               
               <div className="hidden sm:flex space-x-4">
                 <Link to="/quotes" className={linkClass(isActive('/quotes'))}>

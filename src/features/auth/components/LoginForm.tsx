@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import logo from '@/assets/logo.png'
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -31,10 +32,8 @@ export function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="text-center text-3xl font-bold text-foreground">
-            Dental Quotes
-          </h2>
+        <div className="flex flex-col items-center">
+          <img src={logo} alt="FesamedCare" className="h-14 w-auto mb-4" />
           <p className="mt-2 text-center text-sm text-muted-foreground">
             Sign in to your account
           </p>

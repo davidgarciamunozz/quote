@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { FileDown, Trash2 } from 'lucide-react'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import logo from '@/assets/logo.png'
 import { DeleteQuoteDialog } from './DeleteQuoteDialog'
 import type { QuoteWithItems } from '../types'
 
@@ -32,31 +33,29 @@ export function QuoteDetail() {
     const doc = new jsPDF()
     const exchangeRate = quote.exchange_rate ?? 3500
 
-    // Header
-    doc.setFontSize(22)
-    doc.setTextColor(40, 40, 40)
-    doc.text('Cotización de Servicios Dentales', 14, 22)
-    
+    // Logo
+    doc.addImage(logo, 'PNG', 14, 10, 60, 16)
+
     doc.setFontSize(10)
     doc.setTextColor(100, 100, 100)
-    doc.text(`Fecha: ${new Date(quote.created_at).toLocaleDateString()}`, 14, 30)
-    doc.text(`ID: ${quote.id.slice(0, 8)}`, 14, 35)
+    doc.text(`Fecha: ${new Date(quote.created_at).toLocaleDateString()}`, 14, 32)
+    doc.text(`ID: ${quote.id.slice(0, 8)}`, 14, 37)
 
     // Patient Info card-like section
     doc.setDrawColor(230, 230, 230)
     doc.setFillColor(245, 245, 245)
-    doc.roundedRect(14, 42, 182, 30, 2, 2, 'FD')
+    doc.roundedRect(14, 44, 182, 30, 2, 2, 'FD')
     
     doc.setFontSize(12)
     doc.setTextColor(40, 40, 40)
     doc.setFont('helvetica', 'bold')
-    doc.text('Información del Paciente', 20, 50)
-    
+    doc.text('Información del Paciente', 20, 52)
+
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
-    doc.text(`Nombre: ${quote.patient_name}`, 20, 58)
+    doc.text(`Nombre: ${quote.patient_name}`, 20, 60)
     if (quote.notes) {
-      doc.text(`Notas: ${quote.notes}`, 20, 65)
+      doc.text(`Notas: ${quote.notes}`, 20, 67)
     }
 
     // Items Table
@@ -69,7 +68,7 @@ export function QuoteDetail() {
     ])
 
     autoTable(doc, {
-      startY: 78,
+      startY: 80,
       head: [['Servicio', 'Precio Unit.', 'Cant.', 'Subtotal (COP)', 'Subtotal (USD)']],
       body: tableData,
       theme: 'striped',
